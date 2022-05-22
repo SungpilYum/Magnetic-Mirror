@@ -8,7 +8,7 @@ z = linspace(-20,10,100)';
 [A, Br, Bz] = B_field_coil(r, z, I, R0);
 f = figure;
 filename = 'magnetic_mirror_result.gif';
-f.Position = [100 100 700 800];
+f.Position = [0 50 700 700];
 subplot(2,2,[1,3]);
 contour(r, z, A, 200)
 hold on
@@ -25,7 +25,7 @@ v = [0, sqrt(v0.^2 / Rm), sqrt((1-1/Rm)*v0.^2)]; %[x, y, z]
 Rm=Rm/0.001;
 x2 = [-1e-30,-1e-30,-5]; %[x, y, z]
 v2 = [0, sqrt(v0.^2 / Rm), sqrt((1-1/Rm)*v0.^2)]; %[x, y, z]
-maxi = 30000;
+maxi = 50000;
 for k = 1:maxi
     xx(k) = x(1);
     yy(k) = x(2);

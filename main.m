@@ -7,7 +7,7 @@ r = linspace(-10,10,100);
 z = linspace(-20,10,100)';
 [A, Br, Bz] = B_field_coil(r, z, I, R0);
 f = figure;
-filename = 'Day02_Path.gif';
+filename = 'magnetic_mirror_result.gif';
 f.Position = [100 100 700 800];
 subplot(2,2,[1,3]);
 contour(r, z, A, 200)

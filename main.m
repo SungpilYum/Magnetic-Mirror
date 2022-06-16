@@ -4,13 +4,16 @@ m = 9.1e-31; %[kg]
 I = 10e+11; %[current]
 R0 = 1; %[m]
 r = linspace(-10,10,100);
+x = linspace(-10,10,100);
+y = linspace(-10,10,100);
 z = linspace(-20,10,100)';
-[A, Br, Bz] = B_field_coil(r, z, I, R0);
+[A, Br, Bz] = B_field_coil(x, y, z, I, R0);
 f = figure;
 filename = 'magnetic_mirror_result.gif';
 f.Position = [0 50 700 700];
 subplot(2,2,[1,3]);
 contour(r, z, A, 200)
+pause
 hold on
 quiver(r, z, Br, Bz)
 xlabel('x')

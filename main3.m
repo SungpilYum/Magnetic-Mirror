@@ -3,37 +3,38 @@ close all
 m = 9.1e-31; %[kg]
 I = 10e+11; %[current]
 r0 = 2; %[m], minor radius
-R0 = 5; %[m], major radius
-x = linspace(-10,10,100);
-y = linspace(-10,10,100);
-z = linspace(-10,10,100);
+R0 = 3; %[m], major radius
+x = linspace(-10,10,200);
+y = linspace(-10,10,200);
+z = linspace(-10,10,200);
 [X, Y, Z] = meshgrid(x, y, z);
-[Bx, By, Bz] = B_field_toros(X, Y, Z, I, r0, R0);
-[sx, sy, sz] = meshgrid(linspace(0,8,3), linspace(0,8,3), linspace(-3,3,10));
-plot_B_field = streamline(X,Y,Z,Bx,By,Bz, sx, sy, sz);
+N = 16;%number of toroidal coils
+[A, Bx, By, Bz] = B_field_torus(X, Y, Z, I, r0, R0, N);
+[sx, sy, sz] = meshgrid(linspace(0,8,3), linspace(0,8,3), linspace(-3,3,1));
+% plot_B_field = streamline(X,Y,Z,Bx,By,Bz, sx, sy, sz);
+% view(90, 0)
+figure(3)
+plot_B_field2 = streamslice(X,Y,Z,Bx,By,Bz, [], [], 0, 5,"arrows","cubic");
 view(3)
+for i = 1:N
+    phi = i*2*pi/N;
+    hold on
+    plotCircle3D([R0*cos(phi),R0*sin(phi),0], [-R0*sin(phi),R0*cos(phi),0], r0);
+end
+hold off
 pause
-figure(2)
-plot_B_field2 = streamslice(X,Y,Z,Bx,By,Bz, sx, sy, sz);
 
-
-
-contour(r, z, A, 200)
-pause
-hold on
-quiver(r, z, Br, Bz)
 xlabel('x')
+ylabel('y')
 ylabel('z')
-x = [1e-30,1e-30,-5]; %[x, y, z]
-[A0, Br0, Bz0] = B_field_coil(0, -5, I, r0);
-[Am, Brm, Bzm] = B_field_coil(0, -10, I, r0);
-Rm = Bzm / Bz0;
-Rm=Rm/10;
+
+x = [R0+r0/2,1e-30,1e-30]; %[x, y, z]
+[Am, Bxm, Bym, Bzm] = B_field_torus(R0-r0, 0, 0, I, r0, R0, N);
+[A0, Bx0, By0, Bz0] = B_field_torus(R0+r0, 0, 0, I, r0, R0, N);
+Rm = sqrt(Bxm.^2 + Bym.^2 + Bzm.^2) / sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
 v0 = 10e+2;
+Rm = Rm / 10;
 v = [0, sqrt(v0.^2 / Rm), sqrt((1-1/Rm)*v0.^2)]; %[x, y, z]
-Rm=Rm/0.001;
-x2 = [-1e-30,-1e-30,-5]; %[x, y, z]
-v2 = [0, sqrt(v0.^2 / Rm), sqrt((1-1/Rm)*v0.^2)]; %[x, y, z]
 maxi = 50000;
 for k = 1:maxi
     xx(k) = x(1);
@@ -42,13 +43,7 @@ for k = 1:maxi
     vx(k) = v(1);
     vy(k) = v(2);
     vz(k) = v(3);
-    xx2(k) = x2(1);
-    yy2(k) = x2(2);
-    zz2(k) = x2(3);
-    vx2(k) = v2(1);
-    vy2(k) = v2(2);
-    vz2(k) = v2(3);
-    [A, Br, Bz] = B_field_coil(sqrt(x(1).^2 + x(2).^2), x(3), I, r0);
+    [A, Bx, By, Bz] = B_field_torus(x(1), x(2), x(3), I, r0, R0, N);
     B = [Br*(x(1)/sqrt(x(1).^2+x(2).^2)), Br*(x(2)/sqrt(x(1).^2+x(2).^2)), Bz];
     v_para_hist(k) = norm(B ./ norm(B) .* dot(v, B ./ norm(B)));
     v_perp_hist(k) = norm(v - B ./ norm(B) .* dot(v, B ./ norm(B)));
@@ -101,10 +96,10 @@ for j = 1:400:maxi
     frame = getframe(1);
     im = frame2im(frame);
     [imind,cm] = rgb2ind(im,256);
-        if j == 1;
-         imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+    if j == 1;
+        imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
     else
-         imwrite(imind,cm,filename,'gif','WriteMode','append');
+        imwrite(imind,cm,filename,'gif','WriteMode','append');
     end
     hold on;
 end

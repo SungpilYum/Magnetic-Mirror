@@ -1,8 +1,9 @@
-function [x, v] = pusher_boris(x, v, B)
+function [x, v] = pusher_boris(x, v, B, m)
 
-m = 9.1e-31;
-q = 1.6e-19;
-h = 4.3e-7;
+q = -1.6e-19; % electron
+q = -2*q; % alpha particle
+% h = 3.5e-10; % electron time scale
+h = 5.07e-9; % ion time scale
 E = [0, 0, 0];
 % [A, Br, Bz] = B_field_coil(sqrt(x(1).^2 + x(2).^2), x(3));
 % B = [Br*(x(1)/sqrt(x(1).^2+x(2).^2)), Br*(x(2)/sqrt(x(1).^2+x(2).^2)), Bz];

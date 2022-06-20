@@ -4,16 +4,13 @@ m = 9.1e-31; %[kg]
 I = 10e+11; %[current]
 R0 = 1; %[m]
 r = linspace(-10,10,100);
-x = linspace(-10,10,100);
-y = linspace(-10,10,100);
 z = linspace(-20,10,100)';
-[A, Br, Bz] = B_field_coil(x, y, z, I, R0);
+[A, Br, Bz] = B_field_coil(r, z, I, R0);
 f = figure;
 filename = 'magnetic_mirror_result.gif';
 f.Position = [0 50 700 700];
 subplot(2,2,[1,3]);
 contour(r, z, A, 200)
-pause
 hold on
 quiver(r, z, Br, Bz)
 xlabel('x')
@@ -48,10 +45,10 @@ for k = 1:maxi
     v_perp_hist(k) = norm(v - B ./ norm(B) .* dot(v, B ./ norm(B)));
     mu_hist(k) = 1/2 * m * v_perp_hist(k).^2 / norm(B);
     E_hist(k) = 1/2 * m * norm(v).^2;
-    [x, v] = pusher_boris(x, v, B);
+    [x, v] = pusher_boris(x, v, B, m);
     [A, Br2, Bz2] = B_field_coil(sqrt(x2(1).^2 + x2(2).^2), x2(3), I, R0);
     B2 = [Br2*(x2(1)/sqrt(x2(1).^2+x2(2).^2)), Br2*(x2(2)/sqrt(x2(1).^2+x2(2).^2)), Bz2];
-    [x2, v2] = pusher_boris(x2, v2, B2);
+    [x2, v2] = pusher_boris(x2, v2, B2, m);
     k;
 end
 subplot(2,2,[1,3]);
